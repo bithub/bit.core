@@ -1,24 +1,55 @@
 
+import os
+import inspect
 from zope.interface import implements
-from zope.component import getUtility, provideAdapter, provideUtility
+from zope.component import getUtility, provideUtility, provideHandler,provideAdapter
 
-from bit.bot.common.interfaces import IPlugin, IApplication, INameResolver
+# this is necessary to activate the event architecture
+import zope.component.event
+# and this is for pyflakes
+zope.component.event
 
-from bit.bot.base.plugin import BotPlugin
+from twisted.application.service import IServiceCollection
+from twisted.web import static
 
-from bit.name.coins.interfaces import INamecoin
-from bit.name.coins.names import Namecoin
+from bit.core.interfaces import IPlugin, IServices
 
-class BitNamecoins(BotPlugin):
+class BitPlugin(object):
     implements(IPlugin)
-    name = 'bit.name.coins'
+    _services = {}
+    _utils = []
 
-    def load_adapters(self):
-        provideAdapter(Namecoin,[IApplication,],INamecoin)       
+    @property
+    def name(self):
+        return '%s.%s' %(self.__module__,self.__class__.__name___)
+
+    @property
+    def utils(self):
+        return self._utils
 
     def load_utils(self):
-        app = getUtility(IApplication)
-        nmc=INamecoin(app)
-        provideUtility(nmc, INamecoin)
-        provideUtility(nmc, INameResolver, 'bit')
+        for util,iface in self.utils:
+            if isinstance(iface,list):
+                name,iface = iface
+                provideUtility(util,iface,name=name)
+            else:
+                provideUtility(util,iface)
+
+    @property
+    def services(self):
+        return self._services
+
+    def load_services(self):
+        if not self.services: return
+        _services = {}
+        for sid,s in self.services.items():
+            _services[sid] = s['service'](*s.get('args',[]))
+        getUtility(IServices).add(self.name,_services)
+
+
+    def load_sockets(self): 
+        pass
+
+    def load_adapters(self):         
+        pass
 
