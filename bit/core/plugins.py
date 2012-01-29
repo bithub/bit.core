@@ -25,4 +25,5 @@ class Plugins(object):
 
         for plug in _plugins:
             for extender in getAdapters([plug,],IPluginExtender):
+                #import pdb; pdb.set_trace()
                 extender[1].extend()
