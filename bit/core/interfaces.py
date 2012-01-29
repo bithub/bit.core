@@ -23,3 +23,7 @@ class IFileConfiguration(I):
 class ISockets(I):
     pass
 
+class IPluginExtender(I):
+    pass
+
+
