@@ -25,7 +25,7 @@ class FileConfiguration(object):
     def get(self,section,name=None):
         if not name:
             return [x for x,y in self.config.items(section)]
-        results = self.config.get(section,name)
+        results = self.config.get(section,name,raw=False)
         if '\n' in results.strip():
             results = [r.strip() for r in results.split('\n')]
         return results
