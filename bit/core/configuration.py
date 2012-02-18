@@ -12,8 +12,11 @@ class Configuration(object):
         utils = getUtilitiesFor(IConfiguration)
         for utilid,util in utils:
             if utilid:
-                res = util.get(section,name)
-                if res: return res
+                try:
+                    res = util.get(section,name)
+                    if res: return res
+                except:
+                    pass
 
 
 class FileConfiguration(object):
