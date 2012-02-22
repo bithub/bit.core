@@ -39,13 +39,6 @@ class BitPlugin(object):
     def services(self):
         return self._services
 
-    def load_services(self):
-        if not self.services: return
-        _services = {}
-        for sid,s in self.services.items():
-            _services[sid] = s['service'](*s.get('args',[]))
-        getUtility(IServices).add(self.name,_services)
-
 
     def load_sockets(self): 
         pass
