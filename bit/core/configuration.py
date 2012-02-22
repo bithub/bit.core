@@ -8,6 +8,16 @@ from bit.core.interfaces import IConfiguration, IFileConfiguration
 
 class Configuration(object):
     implements(IConfiguration)
+    def sections(self):
+        utils = getUtilitiesFor(IConfiguration)
+        for utilid,util in utils:
+            if not utilid: continue
+            try:                    
+                for section in util.sections():
+                    yield section
+            except:
+                pass        
+
     def get(self,section,name=None):
         utils = getUtilitiesFor(IConfiguration)
         for utilid,util in utils:
@@ -25,6 +35,9 @@ class FileConfiguration(object):
         self.filename = filename
         self.config = ConfigParser()
         self.config.read(filename)
+    def sections(self):
+        for section in self.config.sections():
+            yield section
     def get(self,section,name=None):
         if not name:
             return [x for x,y in self.config.items(section)]
