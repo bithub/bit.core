@@ -1,10 +1,10 @@
 
 from zope.dottedname.resolve import resolve  
-from zope.component import getUtility, getAdapters
+from zope.component import getUtility
 
 from zope.interface import implements
 
-from bit.core.interfaces import IPlugins, IPlugin, IConfiguration, IPluginExtender
+from bit.core.interfaces import IPlugins, IPlugin, IConfiguration
 from StringIO import StringIO
 from zope.configuration.xmlconfig import xmlconfig
 

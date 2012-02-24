@@ -2,7 +2,6 @@
 from zope.interface import implements
 
 from twisted.application.service import IServiceCollection, MultiService
-from twisted.internet import defer
 
 from bit.core.interfaces import IServices
 
