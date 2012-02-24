@@ -1,4 +1,5 @@
 
+import os
 from zope.dottedname.resolve import resolve  
 from zope.component import getUtility
 
@@ -31,21 +32,25 @@ class Plugins(object):
             package = plugin.strip().split('.plugin.')[0]
             snippet = "<include package='%s' />" %package
             zcml = zcml_template % snippet            
-            if package == 'tca.b0b.bot':
+            zcml_path = os.path.join(resolve(package).__path__[0],'configure.zcml')
+            if os.path.exists(zcml_path):
                 xmlconfig(StringIO(zcml))
 
-        for plugin in plugins:        
+        for plugin in plugins:                    
+            package = plugin.strip().split('.plugin.')[0]
             snippet = "<include package='%s' file='meta.zcml' />" %package
             zcml = zcml_template % snippet
-            if package == 'tca.b0b.bot':
+            zcml_path = os.path.join(resolve(package).__path__[0],'meta.zcml')
+            if os.path.exists(zcml_path):
                 xmlconfig(StringIO(zcml))
 
         for plugin in plugins:        
+            package = plugin.strip().split('.plugin.')[0]
             snippet = "<include package='%s' file='plugin.zcml' />" %package
             zcml = zcml_template % snippet
-            if package == 'tca.b0b.bot':
+            zcml_path = os.path.join(resolve(package).__path__[0],'plugin.zcml')
+            if os.path.exists(zcml_path):
                 xmlconfig(StringIO(zcml))
-
                 
         for auto in ['utils',]:
             for plug in _plugins:
