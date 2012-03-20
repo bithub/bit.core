@@ -25,6 +25,8 @@ setup(name='bit.core',
           'setuptools',
           'zope.interface',
           'zope.component',
+          'zope.configuration',
+          'zope.dottedname',
           'twisted',
       ],
       entry_points="""
