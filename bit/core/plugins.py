@@ -25,14 +25,6 @@ class Plugins(object):
         config = getUtility(IConfiguration)
         plugins = config.get('bot', 'plugins')
 
-        from zope.component import getGlobalSiteManager
-        gsm = getGlobalSiteManager()
-
-        #import pdb; pdb.set_trace()
-        #snippet = "<include package='zope.component' file='meta.zcml' />"
-        #zcml = zcml_template % snippet
-        #xmlconfig(StringIO(zcml))
-
         snippet = "<include package='zope.component' />"
         zcml = zcml_template % snippet
         xmlconfig(StringIO(zcml))
