@@ -23,6 +23,9 @@ setup(name='bit.core',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'zope.interface',
+          'zope.component',
+          'twisted',
       ],
       entry_points="""
       # -*- Entry points: -*-
