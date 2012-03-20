@@ -8,7 +8,6 @@ setup(name='bit.core',
       description="Bit Core",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
-      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
@@ -19,7 +18,7 @@ setup(name='bit.core',
       url='http://code.3ca.org.uk',
       license='GPL',
       packages=find_packages(exclude=['ez_setup']),
-      namespace_packages=['bit',],
+      namespace_packages=['bit'],
       include_package_data=True,
       zip_safe=False,
       install_requires=[
