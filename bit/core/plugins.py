@@ -36,43 +36,33 @@ class Plugins(object):
         log.msg('Loading interfaces and adapters')
 
         for plugin in plugins:
-            plug = resolve(plugin.strip())()
-            if IPlugin.providedBy(plug):
-                _plugins.append(plug)
-            package = plugin.strip().split('.plugin.')[0]
-            snippet = "<include package='%s' />" % package
+            snippet = "<include package='%s' />" % plugin
             zcml = zcml_template % snippet
             zcml_path = os.path.join(
-                resolve(package).__path__[0], 'configure.zcml')
+                resolve(plugin).__path__[0], 'configure.zcml')
             if os.path.exists(zcml_path):
+                log.msg('Loading configuration for: %s' plugin)
                 xmlconfig(StringIO(zcml))
 
         log.msg('Loading extensions')
 
         for plugin in plugins:
-            package = plugin.strip().split('.plugin.')[0]
-            snippet = "<include package='%s' file='meta.zcml' />" % package
+            snippet = "<include package='%s' file='meta.zcml' />" % plugin
             zcml = zcml_template % snippet
-            zcml_path = os.path.join(resolve(package).__path__[0], 'meta.zcml')
+            zcml_path = os.path.join(resolve(plugin).__path__[0], 'meta.zcml')
             if os.path.exists(zcml_path):
+                log.msg('Loading extensions for: %s' plugin)
                 xmlconfig(StringIO(zcml))
 
         log.msg('Loading plugins')
 
         for plugin in plugins:
-            package = plugin.strip().split('.plugin.')[0]
-            snippet = "<include package='%s' file='plugin.zcml' />" % package
+            snippet = "<include package='%s' file='plugin.zcml' />" % plugin
             zcml = zcml_template % snippet
             zcml_path = os.path.join(
-                resolve(package).__path__[0], 'plugin.zcml')
+                resolve(plugin).__path__[0], 'plugin.zcml')
             if os.path.exists(zcml_path):
+                log.msg('Loading plugin for: %s' plugin)
                 xmlconfig(StringIO(zcml))
 
         log.msg('Plugins loaded, loading legacy code')
-
-        for auto in ['utils']:
-            for plug in _plugins:
-                if hasattr(plug, 'load_%s' % auto):
-                    getattr(plug, 'load_%s' % auto)()
-
-        log.msg('...done')
