@@ -8,7 +8,7 @@ from zope.configuration.xmlconfig import xmlconfig
 
 from twisted.python import log
 
-from bit.core.interfaces import IPlugins, IPlugin, IConfiguration
+from bit.core.interfaces import IPlugins, IConfiguration
 
 zcml_template = """\
        <configure xmlns='http://namespaces.zope.org/zope'
@@ -31,7 +31,6 @@ class Plugins(object):
 
         if isinstance(plugins, str):
             plugins = [plugins]
-        _plugins = []
 
         log.msg('Loading interfaces and adapters')
 
@@ -41,7 +40,7 @@ class Plugins(object):
             zcml_path = os.path.join(
                 resolve(plugin).__path__[0], 'configure.zcml')
             if os.path.exists(zcml_path):
-                log.msg('Loading configuration for: %s' plugin)
+                log.msg('Loading configuration for: %s' % plugin)
                 xmlconfig(StringIO(zcml))
 
         log.msg('Loading extensions')
@@ -51,7 +50,7 @@ class Plugins(object):
             zcml = zcml_template % snippet
             zcml_path = os.path.join(resolve(plugin).__path__[0], 'meta.zcml')
             if os.path.exists(zcml_path):
-                log.msg('Loading extensions for: %s' plugin)
+                log.msg('Loading extensions for: %s' % plugin)
                 xmlconfig(StringIO(zcml))
 
         log.msg('Loading plugins')
@@ -62,7 +61,7 @@ class Plugins(object):
             zcml_path = os.path.join(
                 resolve(plugin).__path__[0], 'plugin.zcml')
             if os.path.exists(zcml_path):
-                log.msg('Loading plugin for: %s' plugin)
+                log.msg('Loading plugin for: %s' % plugin)
                 xmlconfig(StringIO(zcml))
 
         log.msg('Plugins loaded, loading legacy code')
