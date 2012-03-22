@@ -4,7 +4,8 @@ from ConfigParser import ConfigParser
 from zope.component import getUtilitiesFor, provideUtility
 from zope.interface import implements
 
-from bit.core.interfaces import IConfiguration, IFileConfiguration, IStringConfiguration
+from bit.core.interfaces import IConfiguration,\
+    IFileConfiguration, IStringConfiguration
 
 
 class Configuration(object):
@@ -14,7 +15,6 @@ class Configuration(object):
     def __init__(self):
         provideUtility(self, IConfiguration)
 
-    
     def register(self, configuration, name='default'):
         if not IConfiguration.providedBy(configuration):
             return
@@ -42,6 +42,7 @@ class Configuration(object):
                 except:
                     pass
 
+
 class BaseConfiguration(object):
 
     def sections(self):
@@ -58,13 +59,13 @@ class BaseConfiguration(object):
 
 
 class StringConfiguration(BaseConfiguration):
-    
+
     implements(IStringConfiguration)
 
     def __init__(self, string_config):
         self.config = ConfigParser(allow_no_value=True)
         self.config.readfp(io.BytesIO(string_config))
-        
+
 
 class FileConfiguration(BaseConfiguration):
 

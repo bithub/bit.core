@@ -45,6 +45,7 @@ class IFileConfiguration(IConfiguration):
 
     pass
 
+
 class IStringConfiguration(IConfiguration):
 
     pass

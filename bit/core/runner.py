@@ -1,9 +1,5 @@
-
-from StringIO import StringIO
-
-from zope.interface import alsoProvides, implements, Interface as I
-from zope.configuration.xmlconfig import xmlconfig
-from zope.component import getUtility, provideUtility, provideAdapter
+from zope.interface import alsoProvides, implements
+from zope.component import provideUtility, provideAdapter
 
 from twisted.application import service
 from twisted.internet import defer
@@ -26,7 +22,7 @@ class ApplicationRunner(object):
             self.config.get('bot', 'name').capitalize(), uid=1001, gid=1001)
         self.s.setServiceParent(application)
         alsoProvides(application, IApplication)
-        provideUtility(application, IApplication)        
+        provideUtility(application, IApplication)
         provideUtility(Services(application), IServices)
         plugins = Plugins()
         provideUtility(plugins, IPlugins)
