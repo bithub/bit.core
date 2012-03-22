@@ -1,4 +1,5 @@
 import io
+import os
 from ConfigParser import ConfigParser
 
 from zope.component import getUtilitiesFor, provideUtility
@@ -75,3 +76,20 @@ class FileConfiguration(BaseConfiguration):
         self.filename = filename
         self.config = ConfigParser()
         self.config.read(filename)
+
+
+class ConfigurationLoader(object):
+
+    def __init__(self, config):
+        self.config = config
+
+    def load(self):
+        configuration = Configuration()
+        file_configuration = FileConfiguration(self.config['config'])
+        provideUtility(configuration, IConfiguration)
+        provideUtility(file_configuration, IConfiguration, name='default')
+        for extension in [x.strip() for x
+                          in configuration.get('bot', 'extends')]:
+            provideUtility(FileConfiguration(extension),
+                           IConfiguration, name=os.path.basename(extension))
+        return configuration
