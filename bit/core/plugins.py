@@ -22,6 +22,7 @@ class Plugins(object):
     implements(IPlugins)
 
     def loadPlugins(self):
+
         config = getUtility(IConfiguration)
         plugins = config.get('bot', 'plugins')
 

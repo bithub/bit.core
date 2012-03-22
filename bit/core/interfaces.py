@@ -16,6 +16,15 @@ class IApplication(I):
         """ stop the application """
 
 
+class IApplicationRunner(I):
+
+    def start():
+        """ start the application """
+
+    def stop():
+        """ stop the application """
+
+
 class IPlugin(I):
 
     pass
@@ -33,6 +42,10 @@ class IConfiguration(I):
 
 
 class IFileConfiguration(IConfiguration):
+
+    pass
+
+class IStringConfiguration(IConfiguration):
 
     pass
 
