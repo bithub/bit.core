@@ -1,6 +1,18 @@
 from zope.interface import Interface as I
 
 
+class IRequest(I):
+    
+    def load(session, body):
+        """ load a request for session """
+
+
+class ICommand(I):
+    
+    def load(session, body):
+        """ load a request for session """
+
+
 class IServices(I):
 
     def services():
