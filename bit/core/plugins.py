@@ -22,6 +22,7 @@ class Plugins(object):
     implements(IPlugins)
 
     def loadPlugins(self):
+        log.err('bit.core.plugins: loadPlugins')
 
         config = getUtility(IConfiguration)
         plugins = config.get('bot', 'plugins')
@@ -33,28 +34,20 @@ class Plugins(object):
         if isinstance(plugins, str):
             plugins = [plugins]
 
-        log.msg('Loading interfaces and adapters')
-
         for plugin in plugins:
             snippet = "<include package='%s' />" % plugin
             zcml = zcml_template % snippet
             zcml_path = os.path.join(
                 resolve(plugin).__path__[0], 'configure.zcml')
             if os.path.exists(zcml_path):
-                log.msg('Loading configuration for: %s' % plugin)
                 xmlconfig(StringIO(zcml))
-
-        log.msg('Loading extensions')
 
         for plugin in plugins:
             snippet = "<include package='%s' file='meta.zcml' />" % plugin
             zcml = zcml_template % snippet
             zcml_path = os.path.join(resolve(plugin).__path__[0], 'meta.zcml')
             if os.path.exists(zcml_path):
-                log.msg('Loading extensions for: %s' % plugin)
                 xmlconfig(StringIO(zcml))
-
-        log.msg('Loading plugins')
 
         for plugin in plugins:
             snippet = "<include package='%s' file='plugin.zcml' />" % plugin
@@ -62,7 +55,6 @@ class Plugins(object):
             zcml_path = os.path.join(
                 resolve(plugin).__path__[0], 'plugin.zcml')
             if os.path.exists(zcml_path):
-                log.msg('Loading plugin for: %s' % plugin)
                 xmlconfig(StringIO(zcml))
 
-        log.msg('Plugins loaded, loading legacy code')
+
