@@ -1,14 +1,8 @@
-import os
 import zope
-import bit
-from StringIO import StringIO
-
-import zope
-from zope.configuration.xmlconfig import xmlconfig
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('bit.core')
 
-from bit.core.interfaces import IRequest
+import bit
 
 
 class IServiceDirective(zope.interface.Interface):
@@ -89,11 +83,10 @@ class ICommandDirective(zope.interface.Interface):
         title=_("Command request interface"),
         description=_("The request interface that I provide commands for"),
         required=False,
-        missing_value=IRequest,
         )
 
 
-def command(_context, name, factory, for_=IRequest):
+def command(_context, name, factory, for_=bit.core.interfaces.IRequest):
     _context.action(
         discriminator=None,
         callable=zope.component.provideAdapter,
