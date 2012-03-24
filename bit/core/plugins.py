@@ -56,5 +56,3 @@ class Plugins(object):
                 resolve(plugin).__path__[0], 'plugin.zcml')
             if os.path.exists(zcml_path):
                 xmlconfig(StringIO(zcml))
-
-
