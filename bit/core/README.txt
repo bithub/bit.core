@@ -80,10 +80,10 @@ Lets check our service collection is the same as the one provided by the runner
   True
 
 
-services
---------
+registering services with python
+--------------------------------
 
-Services are registered as with the IServices utility using zcml
+First lets grab the IServices utility
 
   >>> services = zope.component.getUtility(bit.core.interfaces.IServices)
   >>> services
@@ -95,9 +95,6 @@ Let's check there are none registered so far
   >>> services.services
   {}
 
-
-registering services
---------------------
 
 We can add multiservices using a named dictionary
 
@@ -122,9 +119,16 @@ We can add multiservices using a named dictionary
   >>> foo.parent == runner.service
   True
 
-  >>> foo.getServiceNamed('bar')
+  >>> bar = foo.getServiceNamed('bar')
+  >>> bar
   <twisted.application.internet.TCPServer ...>
 
+  >>> bar.name
+  'bar'
+
+
+registering a service with zcml
+-------------------------------
 
 Lets create a helper for running zcml through
 
@@ -178,7 +182,64 @@ We can add another service to our multi-service by giving it the same parent
   ...  	factory="twisted.manhole.telnet.ShellFactory"
   ...   /> ''')
 
+  >>> sorted(services.services['bit.core'].namedServices.keys())
+  [u'test-service', u'test-service-2']
+
   >>> testservice2 = multiservice.getServiceNamed('test-service-2')
   >>> testservice2
   <twisted.application.internet.TCPServer ...>
 
+As per twisted, services can be controlled by their parents
+
+  >>> multiservice.running
+  1
+	
+  >>> testservice2.running
+  1
+
+  >>> def _stopped(resp):
+  ...	  if not testservice2.running == 0:
+  ...		print 'ERROR: testservice2 is not running'
+  ...	  multiservice.startService()
+  ...	  if not testservice2.running == 1:
+  ...		print 'ERROR: testservice2 is not running'
+
+  >>> d = multiservice.stopService()
+  >>> d.addCallback(_stopped)
+  <DeferredList at ...>
+
+
+registering a command with python
+---------------------------------
+
+Commands are named registered adapters against IRequest interfaces
+
+   >>> class DummyRequest(object):
+   ... 	   zope.interface.implements(bit.core.interfaces.IRequest)
+   ...
+   ...	   def speak(self, msg):
+   ...	       print msg
+   
+   >>> request = DummyRequest()
+   >>> commands = zope.component.getAdapter(request, bit.core.interfaces.ICommand)
+   >>> commands
+   <bit.core.commands.Commands ...>
+
+Commands are asynchronous, they also may respond using the IRequest.speak interface before the command has completed
+
+Adapters registered without a name provide helpful info about available commands
+
+   >>> def print_help(resp):
+   ... 	   if not resp == u'list of commands:\nhelp':
+   ... 	      print 'ERROR: no list of commands!'
+
+   >>> def help(resp):
+   ...     return commands.load(None, 'help').addCallback(print_help)
+
+   >>> d.addCallback(help)
+   <DeferredList at ...>	   
+ 
+   >>> d.addCallbacks(lambda x: twisted.internet.reactor.stop())
+   <DeferredList ...>
+
+   >>> twisted.internet.reactor.run()

@@ -10,4 +10,17 @@
       for="twisted.application.service.IServiceCollection"
       />
 
+  <adapter
+      factory=".commands.Commands"
+      for="bit.core.interfaces.IRequest"
+      provides="bit.core.interfaces.ICommand"
+      />
+
+  <adapter
+      factory=".commands.Commands"
+      for="bit.core.interfaces.IRequest"
+      provides="bit.core.interfaces.ICommand"
+      name="help"
+      />
+
 </configure>
