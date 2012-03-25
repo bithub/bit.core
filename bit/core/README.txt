@@ -4,7 +4,8 @@ bit.core
 create a bit.core app
 ---------------------
 
-  >>> import zope
+First we need to load an application
+
   >>> import bit
 
   >>> test_configuration = """
@@ -25,8 +26,10 @@ The runner contains a variable service which is the app's service collection
   >>> runner.service
   <twisted.application.service.MultiService ...> 
 
+
 We can now get the application
 
+  >>> import zope
   >>> app = zope.component.getUtility(bit.core.interfaces.IApplication)
   >>> app
   <twisted.python.components.Componentized instance ...>
@@ -75,7 +78,7 @@ Lets add a service using a zcml service directive
   ...	name="test-service"
   ... 	service="twisted.application.internet.TCPServer"
   ...  	port="bit.core.testing.getTestPort"
-  ...  	factory="bit.core.testing.getTestFactory"
+  ...  	factory="twisted.manhole.telnet.ShellFactory"
   ...   /> ''')
 
 
@@ -94,5 +97,3 @@ All services belong to a multi-service whose name is specified by parent in the 
 
   >>> testservice.args
   (23232, <twisted.manhole.telnet.ShellFactory instance ...>)
-
-
