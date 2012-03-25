@@ -25,7 +25,7 @@ class Plugins(object):
         log.err('bit.core.plugins: loadPlugins')
 
         config = getUtility(IConfiguration)
-        plugins = config.get('bot', 'plugins')
+        plugins = config.get('bit', 'plugins')
 
         snippet = "<include package='zope.component' />"
         zcml = zcml_template % snippet

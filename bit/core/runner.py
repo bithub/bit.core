@@ -16,11 +16,10 @@ class ApplicationRunner(object):
 
     def __init__(self, config):
         self.config = config
-        self.s = service.MultiService()
-        provideUtility(self.config, IConfiguration)
         application = service.Application(
-            self.config.get('bot', 'name').capitalize(), uid=1001, gid=1001)
-        self.s.setServiceParent(application)
+            self.config.get('bit', 'name').capitalize(), uid=1001, gid=1001)
+        self.s = service.IServiceCollection(application)
+        #self.s.setServiceParent(application)
         alsoProvides(application, IApplication)
         provideUtility(application, IApplication)
         provideUtility(Services(application), IServices)

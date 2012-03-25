@@ -89,7 +89,7 @@ class ConfigurationLoader(object):
         provideUtility(configuration, IConfiguration)
         provideUtility(file_configuration, IConfiguration, name='default')
         for extension in [x.strip() for x
-                          in configuration.get('bot', 'extends')]:
+                          in configuration.get('bit', 'extends')]:
             provideUtility(FileConfiguration(extension),
                            IConfiguration, name=os.path.basename(extension))
         return configuration
