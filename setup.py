@@ -6,7 +6,7 @@ version = '0.0.14'
 setup(name='bit.core',
       version=version,
       description="Core interfaces for bit framework",
-      long_description=open("README.txt").read() + "\n" +
+      long_description=open("bit/core/README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       classifiers=[
         "Programming Language :: Python",
