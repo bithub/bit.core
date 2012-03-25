@@ -19,6 +19,7 @@ class TestCommand2(object):
 
     def __init__(self, request):
         self.request = request
-    
+
     def load(self, session, args):
-        return twisted.internet.defer.maybeDeferred(lambda: 'another test complete!')
+        return twisted.internet.defer.maybeDeferred(
+            lambda: 'another test complete!')

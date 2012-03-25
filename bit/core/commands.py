@@ -14,6 +14,7 @@ class Commands(object):
     def load(self, sessionid, args):
         log.msg('bit.bot.xmpp.commands: Commands.load: ',
                 sessionid)
+
         def _commands():
             log.msg('bit.bot.http.request: Commands.load._commands: ',
                     sessionid)
@@ -22,8 +23,9 @@ class Commands(object):
                 command_name = args.strip().split(' ')[1]
                 command = queryAdapter(self.request, ICommand, command_name)
                 if command:
-                    response.append( "%s:" % command_name)
-                    response.append(command.__doc__ or '...is currently undocumented')
+                    response.append("%s:" % command_name)
+                    response.append(
+                        command.__doc__ or '...is currently undocumented')
                 else:
                     response.append('unrecognized command: %s' % command_name)
                     response.append('type > or >help for a list of commands')

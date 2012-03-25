@@ -70,6 +70,7 @@ class StringConfiguration(BaseConfiguration):
     def set(self, section, k, v):
         raise NotImplementedError
 
+
 class FileConfiguration(BaseConfiguration):
 
     implements(IFileConfiguration)
@@ -80,7 +81,7 @@ class FileConfiguration(BaseConfiguration):
         self.config.read(filename)
 
 
-class ConfigurationLoader(object):
+class FileConfigurationLoader(object):
 
     def __init__(self, config):
         self.config = config
@@ -92,6 +93,23 @@ class ConfigurationLoader(object):
         provideUtility(file_configuration, IConfiguration, name='default')
         for extension in [x.strip() for x
                           in configuration.get('bit', 'extends')]:
+            provideUtility(FileConfiguration(extension),
+                           IConfiguration, name=os.path.basename(extension))
+        return configuration
+
+
+class StringConfigurationLoader(object):
+
+    def __init__(self, config):
+        self.config = config
+
+    def load(self):
+        configuration = Configuration()
+        string_configuration = StringConfiguration(self.config)
+        provideUtility(configuration, IConfiguration)
+        provideUtility(string_configuration, IConfiguration, name='default')
+        for extension in [x.strip() for x
+                          in configuration.get('bit', 'extends') or []]:
             provideUtility(FileConfiguration(extension),
                            IConfiguration, name=os.path.basename(extension))
         return configuration

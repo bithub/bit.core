@@ -82,7 +82,8 @@ class IStringConfiguration(IConfiguration):
 class IInMemoryConfiguration(IConfiguration):
 
     def set(section, k, v):
-        """ set the k to v for section in RAM for the lifetime of this server """
+        """ set the k to v for section
+        in RAM for the lifetime of this server """
 
 
 class ISockets(I):
