@@ -154,7 +154,7 @@ We can add a service using a zcml service directive
   ...   /> ''')
 
 
-If the parent is specified, a mulit-service will be added
+If the parent is specified, a multi-service will be added
 
   >>> 'bit.core' in services.services
   True
@@ -209,8 +209,10 @@ As per twisted, services can be controlled by their parents
   <DeferredList at ...>
 
 
-registering a command with python
----------------------------------
+using the ICommand interface
+----------------------------
+
+Commands are asynchronous, they also may respond using the IRequest.speak interface before the command has completed
 
 Commands are named registered adapters against IRequest interfaces
 
@@ -225,12 +227,12 @@ Commands are named registered adapters against IRequest interfaces
    >>> commands
    <bit.core.commands.Commands ...>
 
-Commands are asynchronous, they also may respond using the IRequest.speak interface before the command has completed
 
-Adapters registered without a name provide helpful info about available commands
+The help will provide you with a list of commands for the given IRequest object
 
+   >>> HELP = u'list of commands:\nhelp'
    >>> def print_help(resp):
-   ... 	   if not resp == u'list of commands:\nhelp':
+   ... 	   if not resp == HELP:
    ... 	      print 'ERROR: no list of commands!'
 
    >>> def help(resp):
@@ -238,8 +240,95 @@ Adapters registered without a name provide helpful info about available commands
 
    >>> d.addCallback(help)
    <DeferredList at ...>	   
- 
-   >>> d.addCallbacks(lambda x: twisted.internet.reactor.stop())
-   <DeferredList ...>
+
+
+registering a command in python
+-------------------------------
+
+We can provide a commmand explicitly using zope.component.provideAdapter
+
+   >>> class TestCommand(object):
+   ... 	     """ This is an example of a command object """
+   ...	     
+   ... 	     zope.interface.implements(bit.core.interfaces.ICommand)
+   ...
+   ...	     def __init__(self, request):
+   ...	     	 self.request = request
+   ...
+   ...	     def load(self, session, args):
+   ...	     	 return twisted.internet.defer.maybeDeferred(lambda: 'test complete!')
+
+   >>> zope.component.provideAdapter(TestCommand,
+   ...				[bit.core.interfaces.IRequest],
+   ...				bit.core.interfaces.ICommand,
+   ...			  	name='test-command')
+
+
+The command is now available in the help menu
+
+   >>> def print_help(resp):
+   ... 	   if not 'test-command' in resp:
+   ... 	      print 'ERROR: test-command missing: %s' %resp
+
+   >>> def help(resp):
+   ...     return commands.load(None, 'help')
+
+   >>> _d = d.addCallback(help).addCallback(print_help)
+
+
+We can also get help for the command, which returns its docstring
+
+   >>> def print_help_test(resp):
+   ... 	   if not 'This is an example of a command object' in resp:
+   ... 	      print 'ERROR: help did not return the docstring: %s' %resp
+
+   >>> def help_test(resp):
+   ...     return commands.load(None, 'help test-command')
+
+   >>> _d = d.addCallback(help_test).addCallback(print_help_test)
+
+
+We can run the command using commands.load
+
+   >>> def print_test_command(resp):
+   ... 	   if not 'test complete!' == resp:
+   ... 	      print 'ERROR: help did not return the docstring: %s' %resp
+
+   >>> def test_command(resp):
+   ...     return zope.component.getAdapter(
+   ...			request, bit.core.interfaces.ICommand,
+   ...			'test-command').load(None, '')
+
+
+   >>> _d = d.addCallback(test_command).addCallback(print_test_command)
+
+
+registering a command with zcml
+-------------------------------
+
+   >>> runSnippet('''
+   ... <command
+   ...	name="test-command-2"
+   ...  factory="bit.core.testing.TestCommand2"
+   ...   /> ''')
+
+   >>> def print_test_command_2(resp):
+   ... 	   if not 'another test complete!' == resp:
+   ... 	      print 'ERROR: command did not return correct response: %s' %resp
+
+   >>> def test_command_2(resp):
+   ...     return zope.component.getAdapter(
+   ...			request, bit.core.interfaces.ICommand,
+   ...			'test-command-2'
+   ...			).load(None, '')
+
+   >>> _d = d.addCallback(test_command_2).addCallback(print_test_command_2)
+
+Lets get ready to stop twisted, 8)
+
+   >>> _d = d.addCallbacks(lambda x: None)
+   >>> _d = d.addCallbacks(lambda x: twisted.internet.reactor.stop())
+
+And start it!
 
    >>> twisted.internet.reactor.run()
