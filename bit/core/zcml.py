@@ -51,6 +51,8 @@ def service(_context, parent, name, service, port, factory, context=None):
     services = zope.component.getUtility(bit.core.interfaces.IServices)
     _services = {}
 
+    if not port:
+        return
     if context:
         _services[name] = service(port(), factory(), context())
     else:
