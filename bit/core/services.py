@@ -28,7 +28,6 @@ class Services(object):
             return
 
         add = True
-
         if name in self._multi:
             plug_services = self.collect.getServiceNamed(name)
             add = False
