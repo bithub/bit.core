@@ -14,7 +14,9 @@ create a bit.core app
   ... """
 		
   >>> configuration = bit.core.configuration.Configuration()
-  >>> configuration.register(bit.core.configuration.StringConfiguration(test_configuration))
+  >>> configuration.register(
+  ...    bit.core.configuration.StringConfiguration(test_configuration))
+
   >>> runner = bit.core.interfaces.IApplicationRunner(configuration)
 
 
