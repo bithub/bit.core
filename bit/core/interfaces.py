@@ -47,20 +47,42 @@ class IPlugins(I):
     pass
 
 
+class IPersistent(I):
+    """ Marker interface for persistent entities """
+
+
 class IConfiguration(I):
 
     def get(section, v):
         """ return variable v from section section """
 
+    def set(section, k, v):
+        """ set the k to v for section in whatever way we can"""
 
-class IFileConfiguration(IConfiguration):
 
-    pass
+class IPersistentConfiguration(IConfiguration, IPersistent):
+    """ Persistent configuration interface """
+
+    def set(section, k, v):
+        """ set the k to v for section """
+
+
+class IFileConfiguration(IPersistentConfiguration):
+
+    def set(section, k, v):
+        """ set the k to v for section in the relevant file"""
 
 
 class IStringConfiguration(IConfiguration):
 
-    pass
+    def set(section, k, v):
+        """ raises NotImplementedError """
+
+
+class IInMemoryConfiguration(IConfiguration):
+
+    def set(section, k, v):
+        """ set the k to v for section in RAM for the lifetime of this server """
 
 
 class ISockets(I):

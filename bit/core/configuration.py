@@ -16,7 +16,7 @@ class Configuration(object):
     def __init__(self):
         provideUtility(self, IConfiguration)
 
-    def register(self, configuration, name='default'):
+    def register(self, configuration, name):
         if not IConfiguration.providedBy(configuration):
             return
         provideUtility(configuration, IConfiguration, name=name)
@@ -67,6 +67,8 @@ class StringConfiguration(BaseConfiguration):
         self.config = ConfigParser(allow_no_value=True)
         self.config.readfp(io.BytesIO(string_config))
 
+    def set(self, section, k, v):
+        raise NotImplementedError
 
 class FileConfiguration(BaseConfiguration):
 

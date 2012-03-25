@@ -1,8 +1,9 @@
 bit.core
 ========
 
-loading configuration
----------------------
+bit configuration
+-----------------
+
 
 Once registered the IConfiguration utility provides access to configuration variables
 
@@ -19,6 +20,7 @@ Once registered the IConfiguration utility provides access to configuration vari
   >>> [x for x in config.sections()]
   []
 
+
 Now if we register a named configuration utility the IConfiguration utility will use it
 
   >>> test_configuration = """
@@ -32,10 +34,12 @@ Now if we register a named configuration utility the IConfiguration utility will
   ... 	  bit.core.interfaces.IConfiguration,
   ...	  name='test_config')
 
+
 Our config utility now has the bit section
 
   >>> [x for x in config.sections()]
   ['bit']
+
 
 We can also register the config provider directly with the IConfiguration utility
 
@@ -45,10 +49,53 @@ We can also register the config provider directly with the IConfiguration utilit
   ... plugins = bit.core
   ... """
   >>> config.register(
-  ...    bit.core.configuration.StringConfiguration(test_configuration_2))
+  ...    bit.core.configuration.StringConfiguration(test_configuration_2),
+  ...	 'string-config')
 
   >>> sorted([x for x in config.sections()])
   ['bit', 'bit2']
+
+
+StringConfigurations do not implement IPersistent
+
+  >>> string_configuration = bit.core.configuration.StringConfiguration(test_configuration)
+  >>> bit.core.interfaces.IPersistent.providedBy(string_configuration)
+  False
+
+  >>> try:
+  ...	  string_configuration.set('bit2', 'foo', 'bar')
+  ... except NotImplementedError:
+  ...     True
+  True
+
+
+Whereas FileConfigurations do implement IPersistent
+
+  >>> import os
+  >>> import sys
+  >>> this_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'tests')
+
+  >>> file_configuration = bit.core.configuration.FileConfiguration(os.path.join(this_dir,'test.cfg'))
+  >>> file_configuration
+  <bit.core.configuration.FileConfiguration ...>
+
+  >>> bit.core.interfaces.IPersistent.providedBy(file_configuration)
+  True
+
+  >>> bit.core.interfaces.IConfiguration.providedBy(file_configuration)
+  True
+
+Lets register our file configuration with the IConfiguration utility
+
+  >>> config.register(file_configuration, 'file-config')
+  >>> sorted([x for x in config.sections()])
+  ['bit', 'bit2', 'bit3']
+
+  >>> config.get('bit3', 'name')
+  'testapp3'
+
+
+Configuration getters/setters synchronous, so if you need dynamic settings you should store the settings and update them with an agent
 
 
 create a bit.core app
@@ -96,7 +143,7 @@ Let's check there are none registered so far
   {}
 
 
-We can add multiservices using a named dictionary
+We can add multiservices with a name and a dictionary of services
 
   >>> from twisted.application import internet
   >>> from twisted.manhole import telnet
