@@ -7,7 +7,7 @@ from twisted.internet import defer
 from bit.core.interfaces import IApplication, IServices,\
     IConfiguration, IPlugins, IApplicationRunner
 from bit.core.plugins import Plugins
-from bit.bot.base.services import Services
+from bit.core.services import Services
 
 
 class ApplicationRunner(object):

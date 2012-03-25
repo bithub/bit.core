@@ -3,5 +3,11 @@
     i18n_domain="bit.core">
 
   <include package="zope.component" />
+  <include package="zope.component.event" />
+
+  <adapter
+      factory=".services.Services"
+      for="twisted.application.service.IServiceCollection"
+      />
 
 </configure>
