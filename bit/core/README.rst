@@ -240,8 +240,11 @@ We can add another service to our multi-service by giving it the same parent
 As per twisted, services can be controlled by their parents
 
   >>> multiservice.running
-  1
-	
+  0	
+  >>> testservice2.running
+  0
+
+  >>> multiservice.startService()
   >>> testservice2.running
   1
 

@@ -64,7 +64,7 @@ class StringConfiguration(BaseConfiguration):
     implements(IStringConfiguration)
 
     def __init__(self, string_config):
-        self.config = ConfigParser(allow_no_value=True)
+        self.config = ConfigParser()
         self.config.readfp(io.BytesIO(string_config))
 
     def set(self, section, k, v):

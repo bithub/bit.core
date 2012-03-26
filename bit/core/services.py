@@ -24,7 +24,6 @@ class Services(object):
             services.setName(name)
             services.setServiceParent(self.collect)
             self._services.append(name)
-            services.startService()
             return
 
         add = True
@@ -40,7 +39,6 @@ class Services(object):
             s.setServiceParent(plug_services)
         if add:
             plug_services.setServiceParent(self.collect)
-            plug_services.startService()
 
     @property
     def services(self):
