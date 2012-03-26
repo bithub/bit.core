@@ -75,7 +75,8 @@ Whereas FileConfigurations do implement IPersistent
   >>> import sys
   >>> this_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'tests')
 
-  >>> file_configuration = bit.core.configuration.FileConfiguration(os.path.join(this_dir,'test.cfg'))
+  >>> file_configuration = bit.core.configuration.FileConfiguration(
+  ...                                    os.path.join(this_dir,'test.cfg'))
   >>> file_configuration
   <bit.core.configuration.FileConfiguration ...>
 
